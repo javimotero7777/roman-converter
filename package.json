@@ -1,0 +1,14 @@
+{
+  "name": "roman-converter",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "mocha-headless-chrome -f test.html --args no-sandbox",
+    "lint": "eslint script.js"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "chai": "^4.3.0",
+    "mocha-headless-chrome": "^2.0.0",
+    "eslint": "^9.0.0"
+  }
+}
