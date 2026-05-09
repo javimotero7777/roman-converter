@@ -1,14 +1,17 @@
 {
   "name": "roman-converter",
-  "version": "1.0.0",
+  "version": "1.0.2",
+  "description": "Roman numeral converter website",
   "scripts": {
-    "test": "mocha-headless-chrome -f test.html --args no-sandbox",
-    "lint": "eslint script.js"
+  "test:headless": "node tests.js"
   },
   "devDependencies": {
-    "mocha": "^10.0.0",
-    "chai": "^4.3.0",
-    "mocha-headless-chrome": "^2.0.0",
-    "eslint": "^9.0.0"
+    "chai": "^5.1.2",
+    "http-server": "^14.1.1",
+    "mocha": "^11.1.0",
+    "mocha-chrome": "^2.2.0",
+    "mocha-headless-chrome": "^4.0.0",
+    "puppeteer": "^19.7.5",
+    "eslint": "^9.0"
   }
 }
