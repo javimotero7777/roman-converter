@@ -4,7 +4,7 @@
   "description": "Roman numeral converter website",
   "scripts": {
     "lint": "eslint script.js",
-    "test": "node run-tests.js",
+    "test": "node tests.js",
     "test:headless": "node run-tests.js"
   },
   "devDependencies": {
