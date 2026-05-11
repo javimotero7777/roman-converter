@@ -37,6 +37,12 @@ function integerToRoman(num) {
       num -= value;       // Subtract the numeral's value from num.
     }
   }
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'triangle_calculated', {
+      'triangle_type': type,
+      'timestamp': new Date().toISOString()
+    });
+  }
   return result;
 }
 
