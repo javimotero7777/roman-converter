@@ -1,4 +1,13 @@
 /**
+ * Helper para enviar eventos a GA4 si gtag está disponible.
+ */
+function trackEvent(name, params = {}) {
+  if (typeof gtag === 'function') {
+    gtag('event', name, params);
+  }
+}
+
+/**
  * Converts an integer (between 1 and 3999) to its Roman numeral equivalent.
  *
  * @param {number} num - The integer to convert.
@@ -37,12 +46,8 @@ function integerToRoman(num) {
       num -= value;       // Subtract the numeral's value from num.
     }
   }
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'triangle_calculated', {
-      'triangle_type': type,
-      'timestamp': new Date().toISOString()
-    });
-  }
+
+  // IMPORTANTE: aquí ya no hay nada de GA4
   return result;
 }
 
@@ -109,6 +114,9 @@ function romanToInteger(roman) {
  * Handles the conversion process when the user clicks the convert button.
  * It reads the user input, determines which conversion to perform,
  * and then displays either the result or an error message.
+ * Aquí también se envían los eventos de GA4:
+ *  - conversion_success
+ *  - invalid_input
  */
 function handleConversion() {
   // Retrieve the selected conversion mode (either 'intToRoman' or 'romanToInt').
@@ -127,18 +135,53 @@ function handleConversion() {
     if (mode === 'intToRoman') {
       // Attempt to parse the input as an integer.
       const num = parseInt(input, 10);
-      if (isNaN(num)) {
-        throw new Error('Please enter a valid integer number.');
+
+      if (isNaN(num) || num <= 0 || num >= 4000) {
+        // Evento GA4 de entrada inválida (modo entero → romano)
+        trackEvent('invalid_input', {
+          tool_name: 'roman_converter',
+          mode: 'intToRoman',
+          input_value: input
+        });
+
+        throw new Error('Please enter an integer between 1 and 3999.');
       }
+
       // Convert the integer to a Roman numeral.
       const roman = integerToRoman(num);
+
+      // Evento GA4 de conversión correcta (modo entero → romano)
+      trackEvent('conversion_success', {
+        tool_name: 'roman_converter',
+        mode: 'intToRoman',
+        arabic_number: num,
+        roman_length: roman.length
+      });
+
       resultDiv.textContent = `Roman Numeral: ${roman}`;
     } else if (mode === 'romanToInt') {
       // Convert the Roman numeral to an integer.
       const num = romanToInteger(input);
+
+      // Evento GA4 de conversión correcta (modo romano → entero)
+      trackEvent('conversion_success', {
+        tool_name: 'roman_converter',
+        mode: 'romanToInt',
+        roman_input: input,
+        arabic_number: num
+      });
+
       resultDiv.textContent = `Integer: ${num}`;
     }
   } catch (error) {
+    // Evento GA4 de entrada inválida (errores en cualquier modo)
+    trackEvent('invalid_input', {
+      tool_name: 'roman_converter',
+      mode,
+      input_value: input,
+      error_message: error.message
+    });
+
     // Display any error messages encountered during conversion.
     errorDiv.textContent = error.message;
   }
@@ -146,4 +189,3 @@ function handleConversion() {
 
 // Attach an event listener to the convert button to trigger the conversion when clicked.
 document.getElementById('convertButton').addEventListener('click', handleConversion);
-
